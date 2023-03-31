@@ -3,7 +3,6 @@ import hashlib
 import urllib
 import random
 import json
-import chardet
 
 def translate(file_path):
     # 百度appid和密钥需要通过注册百度【翻译开放平台】账号后获得

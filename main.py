@@ -60,13 +60,13 @@ def count_json_str(obj):
     if isinstance(obj, str):
         return 1
     elif isinstance(obj, dict):
-        for k, v in obj.items():
-            count += count_json_str(k)
+        for _, v in obj.items():
             count += count_json_str(v)
     elif isinstance(obj, list):
         for v in obj:
             count += count_json_str(v)
     return count
+
 
 if __name__ == '__main__':
     file_path = 'example.json'

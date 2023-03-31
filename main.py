@@ -4,8 +4,11 @@ import urllib
 import random
 import json
 
+
 def translate(file_path):
     # 百度appid和密钥需要通过注册百度【翻译开放平台】账号后获得
+    # https://fanyi-api.baidu.com/manage/developer
+
     appid = ''  # 填写你的appid
     secretKey = ''  # 填写你的密钥
 
@@ -32,9 +35,14 @@ def translate(file_path):
                 httpClient = http.client.HTTPConnection('fanyi-api.baidu.com')
                 httpClient.request('GET', url)
                 response = httpClient.getresponse()
-                result_all = response.read().decode("utf-8")
-                result = json.loads(result_all)
-                translated_value = result['trans_result'][0]['dst']
+                if response.status == 200:
+                    result_all = response.read().decode("utf-8")
+                    result = json.loads(result_all)
+                    translated_value = result['trans_result'][0]['dst']
+                    translated_value = fix_brackets(translated_value)
+                else:
+                    print(f"Error: status code {response.status}")
+                    translated_value = value
             except Exception as e:
                 print(e)
                 translated_value = value
@@ -55,6 +63,7 @@ def translate(file_path):
     with open(result_file_path, 'w', encoding='utf-8') as f:
         json.dump(trans_content, f, ensure_ascii=False, indent=2)
 
+
 def count_json_str(obj):
     count = 0
     if isinstance(obj, str):
@@ -67,6 +76,8 @@ def count_json_str(obj):
             count += count_json_str(v)
     return count
 
+def fix_brackets(text):
+    return text.replace('｛', '{').replace('｝', '}')
 
 if __name__ == '__main__':
     file_path = 'example.json'
